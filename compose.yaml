@@ -1,0 +1,65 @@
+services:
+  zookeeper:
+    image: bitnami/zookeeper:3.8
+    container_name: zookeeper
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - "2181:2181"
+    networks:
+      - kafka-net
+    healthcheck:
+      test: ["CMD-SHELL", "zkServer.sh status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kafka:
+    image: bitnami/kafka:3.6
+    container_name: kafka
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    ports:
+      - "9092:9092"
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    networks:
+      - kafka-net
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics.sh --list --bootstrap-server localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  producer:
+    build:
+      context: ./server-core
+      dockerfile: Dockerfile
+    container_name: producer
+    ports:
+      - '8080:8080'
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka-net
+
+  consumer:
+    build:
+      context: ./consumer
+      dockerfile: Dockerfile
+    container_name: consumer
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka-net
+
+networks:
+  kafka-net:
+    driver: bridge
