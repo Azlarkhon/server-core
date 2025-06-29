@@ -38,22 +38,11 @@ services:
 
   producer:
     build:
-      context: ./server-core
+      context: .
       dockerfile: Dockerfile
     container_name: producer
     ports:
       - '8080:8080'
-    depends_on:
-      kafka:
-        condition: service_healthy
-    networks:
-      - kafka-net
-
-  consumer:
-    build:
-      context: ./consumer
-      dockerfile: Dockerfile
-    container_name: consumer
     depends_on:
       kafka:
         condition: service_healthy
