@@ -7,6 +7,11 @@ import (
 	"github.com/IBM/sarama"
 )
 
+type KafkaProducer interface {
+	Send(topic string, message any) error
+	Close() error
+}
+
 type Producer struct {
 	producer sarama.SyncProducer
 }
