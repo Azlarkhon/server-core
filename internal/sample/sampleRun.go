@@ -7,6 +7,7 @@ import (
 )
 
 func RunSampleMatch(handler *match.MatchHandler) {
+	time.Sleep(5 * time.Second)
 
 	// какая то логика игры, что то происходит
 
