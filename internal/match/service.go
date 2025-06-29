@@ -17,10 +17,10 @@ type MatchService interface {
 }
 
 type Service struct {
-	kafkaProducer *kafka.Producer
+	kafkaProducer kafka.KafkaProducer
 }
 
-func NewService(producer *kafka.Producer) *Service {
+func NewService(producer kafka.KafkaProducer) *Service {
 	return &Service{kafkaProducer: producer}
 }
 
