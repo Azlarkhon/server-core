@@ -9,7 +9,10 @@ import (
 )
 
 func main() {
-	producer, err := kafka.NewProducer([]string{"kafka:9092"})
+	topics := []string{"match-results", "inventory-events"}
+	brokers := []string{"kafka:9092"}
+	
+	producer, err := kafka.NewProducer(brokers, topics)
 	if err != nil {
 		log.Fatalf("Failed to create Kafka producer: %v", err)
 	}

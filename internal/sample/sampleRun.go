@@ -7,7 +7,6 @@ import (
 )
 
 func RunSampleMatch(handler *match.MatchHandler) {
-	time.Sleep(5 * time.Second)
 
 	// какая то логика игры, что то происходит
 
@@ -34,4 +33,6 @@ func RunSampleMatch(handler *match.MatchHandler) {
 	}); err != nil {
 		log.Printf("Error processing match ended: %v", err)
 	}
+
+	time.Sleep(5 * time.Second)
 }
