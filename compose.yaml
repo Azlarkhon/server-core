@@ -43,6 +43,10 @@ services:
     container_name: producer
     ports:
       - '8080:8080'
+    environment:
+      - KAFKA_BROKERS=${KAFKA_BROKERS}
+      - INVENTORY_EVENTS=${INVENTORY_EVENTS}
+      - MATCH_RESULTS=${MATCH_RESULTS}
     depends_on:
       kafka:
         condition: service_healthy

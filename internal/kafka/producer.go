@@ -3,6 +3,7 @@ package kafka
 import (
 	"encoding/json"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/IBM/sarama"
@@ -18,6 +19,9 @@ type Producer struct {
 	producer sarama.AsyncProducer
 	admin    sarama.ClusterAdmin
 	brokers  []string
+
+	wg       sync.WaitGroup
+	stopChan chan struct{}
 }
 
 func NewProducer(brokers []string, topics []string) (*Producer, error) {
@@ -44,6 +48,7 @@ func NewProducer(brokers []string, topics []string) (*Producer, error) {
 		producer: asyncProducer,
 		admin:    admin,
 		brokers:  brokers,
+		stopChan: make(chan struct{}),
 	}
 
 	for _, topic := range topics {
@@ -52,6 +57,7 @@ func NewProducer(brokers []string, topics []string) (*Producer, error) {
 		}
 	}
 
+	producer.wg.Add(2)
 	go producer.listenForSuccess()
 	go producer.listenForErrors()
 
@@ -59,15 +65,33 @@ func NewProducer(brokers []string, topics []string) (*Producer, error) {
 }
 
 func (p *Producer) listenForSuccess() {
-	for success := range p.producer.Successes() {
-		log.Printf("Message successfully sent to topic %s (partition %d, offset %d)",
-			success.Topic, success.Partition, success.Offset)
+	defer p.wg.Done()
+	for {
+		select {
+		case success, ok := <-p.producer.Successes():
+			if !ok {
+				return
+			}
+			log.Printf("Message sent to topic %s (partition %d, offset %d)",
+				success.Topic, success.Partition, success.Offset)
+		case <-p.stopChan:
+			return
+		}
 	}
 }
 
 func (p *Producer) listenForErrors() {
-	for err := range p.producer.Errors() {
-		log.Printf("Failed to send message: %v", err)
+	defer p.wg.Done()
+	for {
+		select {
+		case err, ok := <-p.producer.Errors():
+			if !ok {
+				return
+			}
+			log.Printf("Failed to send message: %v", err)
+		case <-p.stopChan:
+			return
+		}
 	}
 }
 
@@ -78,6 +102,8 @@ func (p *Producer) Send(topic string, message any) error {
 		return err
 	}
 
+	log.Printf("Sending message to topic %s: %s", topic, string(msgBytes))
+
 	p.producer.Input() <- &sarama.ProducerMessage{
 		Topic: topic,
 		Value: sarama.StringEncoder(msgBytes),
@@ -87,10 +113,14 @@ func (p *Producer) Send(topic string, message any) error {
 }
 
 func (p *Producer) Close() error {
-	err := p.producer.Close()
-	if err != nil {
+	close(p.stopChan)
+
+	if err := p.producer.Close(); err != nil {
 		return err
 	}
+
+	p.wg.Wait()
+
 	return p.admin.Close()
 }
 

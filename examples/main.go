@@ -3,16 +3,14 @@ package main
 import (
 	"log"
 
+	"lesta-battleship/server-core/internal/config"
 	"lesta-battleship/server-core/internal/kafka"
 	"lesta-battleship/server-core/internal/match"
 	"lesta-battleship/server-core/internal/sample"
 )
 
 func main() {
-	topics := []string{"match-results", "inventory-events"}
-	brokers := []string{"kafka:9092"}
-	
-	producer, err := kafka.NewProducer(brokers, topics)
+	producer, err := kafka.NewProducer(config.KafkaBrokers, config.TopicsToSend)
 	if err != nil {
 		log.Fatalf("Failed to create Kafka producer: %v", err)
 	}
