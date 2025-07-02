@@ -45,7 +45,7 @@ services:
       - '8080:8080'
     environment:
       - KAFKA_BROKERS=${KAFKA_BROKERS}
-      - INVENTORY_EVENTS=${INVENTORY_EVENTS}
+      - USED_ITEMS=${USED_ITEMS}
       - MATCH_RESULTS=${MATCH_RESULTS}
     depends_on:
       kafka:

@@ -12,6 +12,6 @@ func (sp *MatchHandler) MatchEnded(result MatchResult) error {
 	return sp.service.HandleMatchResult(result)
 }
 
-func (sp *MatchHandler) ItemUsed(event InventoryEvent) error {
-	return sp.service.HandleInventoryEvent(event)
+func (sp *MatchHandler) ItemUsed(item Item) error {
+	return sp.service.HandleUsedItem(item)
 }

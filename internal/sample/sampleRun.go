@@ -11,7 +11,7 @@ func RunSampleMatch(handler *match.MatchHandler) {
 	// какая то логика игры, что то происходит
 
 	// и чел юзает какой то предмет
-	if err := handler.ItemUsed(match.InventoryEvent{
+	if err := handler.ItemUsed(match.Item{
 		PlayerID: 1,
 		ItemID:   42,
 	}); err != nil {

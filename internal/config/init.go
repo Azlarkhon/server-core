@@ -9,7 +9,7 @@ var (
 	KafkaBrokers    []string
 	TopicsToSend    []string
 	MatchResults    string
-	InventoryEvents string
+	UsedItems string
 )
 
 func init() {
@@ -20,7 +20,7 @@ func init() {
 
 	// Topics to send
 	MatchResults = os.Getenv("MATCH_RESULTS")
-	InventoryEvents = os.Getenv("INVENTORY_EVENTS")
+	UsedItems = os.Getenv("USED_ITEMS")
 
-	TopicsToSend = []string{MatchResults, InventoryEvents}
+	TopicsToSend = []string{MatchResults, UsedItems}
 }

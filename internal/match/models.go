@@ -17,7 +17,7 @@ type Experience struct {
 	LoserGain  int `json:"loser_gain,omitempty"`
 }
 
-type InventoryEvent struct {
+type Item struct {
 	PlayerID int `json:"player_id"`
 	ItemID   int `json:"item_id"`
 }

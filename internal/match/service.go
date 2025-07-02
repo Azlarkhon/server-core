@@ -7,7 +7,7 @@ import (
 
 type MatchService interface {
 	HandleMatchResult(result MatchResult) error
-	HandleInventoryEvent(event InventoryEvent) error
+	HandleUsedItem(event Item) error
 }
 
 type Service struct {
@@ -26,8 +26,8 @@ func (s *Service) HandleMatchResult(result MatchResult) error {
 	return nil
 }
 
-func (s *Service) HandleInventoryEvent(event InventoryEvent) error {
-	if err := s.kafkaProducer.Send(config.InventoryEvents, event); err != nil {
+func (s *Service) HandleUsedItem(item Item) error {
+	if err := s.kafkaProducer.Send(config.UsedItems, item); err != nil {
 		return err
 	}
 
