@@ -20,12 +20,11 @@ func RunSampleMatch(handler *match.MatchHandler) {
 
 	// в конце игры/после игры
 	if err := handler.MatchEnded(match.MatchResult{
-		WinnerID:           1,
-		LoserID:            2,
-		MatchID:            1001,
-		MatchDurationInSec: 300,
-		MatchDate:          time.Now(),
-		MatchType:          "ranked",
+		WinnerID:  1,
+		LoserID:   2,
+		MatchID:   1001,
+		MatchDate: time.Now(),
+		MatchType: "ranked",
 		Experience: &match.Experience{
 			WinnerGain: 30,
 			LoserGain:  -15,

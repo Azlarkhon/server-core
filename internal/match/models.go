@@ -3,13 +3,12 @@ package match
 import "time"
 
 type MatchResult struct {
-	WinnerID           int         `json:"winner_id"`
-	LoserID            int         `json:"loser_id"`
-	MatchID            int         `json:"match_id"`
-	MatchDurationInSec int         `json:"match_duration_in_sec"`
-	MatchDate          time.Time   `json:"match_date"`
-	MatchType          string      `json:"match_type"`
-	Experience         *Experience `json:"experience,omitempty"`
+	WinnerID   int         `json:"winner_id"`
+	LoserID    int         `json:"loser_id"`
+	MatchID    int         `json:"match_id"`
+	MatchDate  time.Time   `json:"match_date"`
+	MatchType  string      `json:"match_type"`
+	Experience *Experience `json:"experience,omitempty"`
 }
 
 type Experience struct {
